@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shoponomy — Scale Your Shopify Store to 7-Figures</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET & BASE ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background: #080808;
+      color: #e8e8e8;
+      font-family: 'Barlow', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ────────────────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.35;
+    }
+
+    /* ── SCROLL PROGRESS BAR ──────────────────────────────────────────── */
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, #5aff7e, #00c4ff);
+      z-index: 10000;
+      transition: width 0.1s linear;
+    }
+
+    /* ── TYPOGRAPHY ───────────────────────────────────────────────────── */
+    .font-bebas { font-family: 'Bebas Neue', sans-serif; }
+    .font-condensed { font-family: 'Barlow Condensed', sans-serif; }
+    .accent { color: #5aff7e; }
+
+    /* ── ACCENT / VARIABLES ───────────────────────────────────────────── */
+    :root {
+      --accent: #5aff7e;
+      --accent-dim: rgba(90,255,126,0.15);
+      --surface-1: #0e0e0e;
+      --surface-2: #1a1a1a;
+      --border: rgba(255,255,255,0.07);
+      --text-muted: #888;
+    }
+
+    /* ── REVEAL ON SCROLL ─────────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ── TOP BANNER ───────────────────────────────────────────────────── */
+    #top-banner {
+      background: var(--surface-1);
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      padding: 10px 20px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #ccc;
+    }
+    #top-banner span { color: var(--accent); }
+
+    /* ── NAVBAR ───────────────────────────────────────────────────────── */
+    #navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(8,8,8,0.85);
+      border-bottom: 1px solid transparent;
+      backdrop-filter: blur(0px);
+      transition: backdrop-filter 0.4s ease, border-color 0.4s ease, background 0.4s ease;
+    }
+    #navbar.scrolled {
+      backdrop-filter: blur(20px);
+      border-color: var(--border);
+      background: rgba(8,8,8,0.92);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.7rem;
+      letter-spacing: 0.06em;
+      color: #fff;
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: #aaa;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #fff; }
+    .btn-nav {
+      background: var(--accent);
+      color: #080808;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.06em;
+      padding: 10px 22px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn-nav:hover { background: #7fffA0; transform: translateY(-1px); }
+
+    /* ── SECTION UTILITY ──────────────────────────────────────────────── */
+    section { position: relative; }
+    .container { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+    .section-pad { padding: 100px 0; }
+    .section-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: block;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      line-height: 1.05;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    .section-sub {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      line-height: 1.7;
+    }
+
+    /* ── HERO ─────────────────────────────────────────────────────────── */
+    #hero {
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+      padding: 80px 0 60px;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(90,255,126,0.06) 0%, transparent 70%);
+    }
+    .hero-inner { text-align: center; max-width: 900px; margin: 0 auto; }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(90,255,126,0.3);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .hero-eyebrow::before { content: '●'; font-size: 0.5rem; }
+    .hero-headline {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 7vw, 5.6rem);
+      line-height: 1.02;
+      color: #fff;
+      margin-bottom: 24px;
+      letter-spacing: 0.01em;
+    }
+    .hero-headline em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero-sub {
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+      color: #aaa;
+      max-width: 680px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #080808;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: 0.07em;
+      padding: 16px 32px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: #7fffA0; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(90,255,126,0.25); }
+    .btn-secondary {
+      background: transparent;
+      color: #fff;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: 0.07em;
+      padding: 16px 32px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 6px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); }
+    .hero-badge {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #777;
+      letter-spacing: 0.04em;
+      margin-bottom: 40px;
+    }
+    .hero-badge span { color: var(--accent); margin: 0 6px; }
+    .hero-social-proof {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .avatars {
+      display: flex;
+    }
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      border: 2px solid #080808;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      color: var(--accent);
+      margin-left: -8px;
+    }
+    .avatar:first-child { margin-left: 0; }
+    .avatar:nth-child(1) { background: #1a2e1a; }
+    .avatar:nth-child(2) { background: #1a1a2e; }
+    .avatar:nth-child(3) { background: #2e1a1a; }
+    .avatar:nth-child(4) { background: #1a2a2e; }
+    .avatar:nth-child(5) { background: #2a2e1a; }
+    .social-proof-text {
+      font-size: 0.88rem;
+      color: #888;
+    }
+    .social-proof-text strong { color: #ccc; }
+    .stars { color: #fbbf24; letter-spacing: -1px; }
+
+    /* ── LOGOS TICKER ─────────────────────────────────────────────────── */
+    #logos {
+      padding: 40px 0;
+      background: var(--surface-1);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .ticker-label {
+      text-align: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .ticker-track {
+      display: flex;
+      gap: 0;
+      animation: ticker 24s linear infinite;
+      width: max-content;
+    }
+    .ticker-set {
+      display: flex;
+      gap: 72px;
+      padding: 0 36px;
+      align-items: center;
+    }
+    .ticker-item {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #444;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: color 0.3s;
+    }
+    .ticker-item:hover { color: #777; }
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ── STATS STRIP ──────────────────────────────────────────────────── */
+    #stats {
+      background: var(--surface-2);
+      padding: 48px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+    .stat-card {
+      background: var(--surface-2);
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .stat-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #666;
+    }
+
+    /* ── PAIN SECTION ─────────────────────────────────────────────────── */
+    #pain {
+      padding: 120px 0;
+      text-align: center;
+      background: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(255,80,80,0.04) 0%, transparent 70%);
+    }
+    .pain-problem {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      color: #fff;
+      max-width: 780px;
+      margin: 0 auto 40px;
+      line-height: 1.1;
+    }
+    .pain-agitate {
+      background: var(--surface-1);
+      border: 1px solid rgba(255,80,80,0.2);
+      border-radius: 12px;
+      padding: 36px 48px;
+      max-width: 700px;
+      margin: 0 auto 40px;
+    }
+    .pain-agitate-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #ff6060;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .pain-agitate p {
+      color: #999;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+    .pain-solve {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    /* ── OLD WAY vs NEW WAY ───────────────────────────────────────────── */
+    #comparison {
+      padding: 80px 0 100px;
+      background: var(--surface-1);
+      border-top: 1px solid var(--border);
+    }
+    .comp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 60px;
+    }
+    .comp-card {
+      border-radius: 12px;
+      padding: 40px;
+      border: 1px solid var(--border);
+    }
+    .comp-card.old {
+      background: rgba(255,60,60,0.04);
+      border-color: rgba(255,60,60,0.15);
+    }
+    .comp-card.new {
+      background: rgba(90,255,126,0.04);
+      border-color: rgba(90,255,126,0.2);
+    }
+    .comp-heading {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 28px;
+    }
+    .comp-card.old .comp-heading { color: #ff6060; }
+    .comp-card.new .comp-heading { color: var(--accent); }
+    .comp-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .comp-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.97rem;
+      line-height: 1.5;
+      color: #bbb;
+    }
+    .comp-icon {
+      font-size: 1rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .comp-card.old .comp-icon { color: #ff6060; }
+    .comp-card.new .comp-icon { color: var(--accent); }
+
+    /* ── WALL OF LOVE ─────────────────────────────────────────────────── */
+    #reviews {
+      padding: 100px 0;
+      background: #080808;
+    }
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .review-card {
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 28px 24px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .review-card:hover {
+      border-color: rgba(90,255,126,0.2);
+      transform: translateY(-4px);
+    }
+    .review-stars { color: #fbbf24; font-size: 0.85rem; letter-spacing: -1px; margin-bottom: 14px; }
+    .review-text {
+      font-size: 0.97rem;
+      line-height: 1.65;
+      color: #ccc;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+    .review-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .review-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      color: var(--accent);
+      border: 1px solid rgba(90,255,126,0.2);
+      flex-shrink: 0;
+    }
+    .review-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #fff;
+      letter-spacing: 0.02em;
+    }
+    .review-role {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ── VALUE PROPS ──────────────────────────────────────────────────── */
+    #value-props {
+      padding: 100px 0;
+      background: var(--surface-1);
+      border-top: 1px solid var(--border);
+    }
+    .vp-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 56px;
+    }
+    .vp-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px 28px;
+      transition: border-color 0.3s, transform 0.2s;
+    }
+    .vp-card:hover {
+      border-color: rgba(90,255,126,0.25);
+      transform: translateY(-3px);
+    }
+    .vp-icon {
+      font-size: 1.8rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .vp-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: #fff;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .vp-title em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .vp-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── VIDEO PLACEHOLDER ────────────────────────────────────────────── */
+    #video-section {
+      padding: 100px 0;
+      background: #080808;
+      text-align: center;
+    }
+    .video-wrapper {
+      position: relative;
+      aspect-ratio: 16/9;
+      max-width: 860px;
+      margin: 48px auto 0;
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .video-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(90,255,126,0.04) 0%, rgba(0,196,255,0.04) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+    .play-btn {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(90,255,126,0.15);
+      border: 2px solid rgba(90,255,126,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    .play-btn:hover {
+      background: rgba(90,255,126,0.25);
+      transform: scale(1.1);
+      box-shadow: 0 0 40px rgba(90,255,126,0.2);
+    }
+    .play-btn svg {
+      width: 32px;
+      height: 32px;
+      fill: var(--accent);
+      margin-left: 4px;
+    }
+    .video-caption {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #888;
+      text-transform: uppercase;
+    }
+    .video-grid-lines {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* ── SALES LETTER INTRO ───────────────────────────────────────────── */
+    #sales-intro {
+      padding: 80px 0;
+      background: var(--surface-2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+    .sales-letter {
+      max-width: 740px;
+      margin: 0 auto;
+      font-size: 1.12rem;
+      line-height: 1.85;
+      color: #aaa;
+    }
+    .sales-letter strong { color: #fff; }
+
+    /* ── COMPARISON TABLE ─────────────────────────────────────────────── */
+    #pricing {
+      padding: 100px 0;
+      background: #080808;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-top: 56px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .pricing-col {
+      padding: 40px 32px;
+      border-right: 1px solid var(--border);
+      background: var(--surface-1);
+      position: relative;
+    }
+    .pricing-col:last-child { border-right: none; }
+    .pricing-col.featured {
+      background: linear-gradient(160deg, #0f1f12 0%, #0e1a10 100%);
+      border-color: rgba(90,255,126,0.25);
+      border: 2px solid rgba(90,255,126,0.3);
+      margin: -1px;
+      z-index: 2;
+    }
+    .pricing-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #080808;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    .pricing-type {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .pricing-col.featured .pricing-type { color: var(--accent); }
+    .pricing-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.8rem;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .pricing-range {
+      font-size: 0.82rem;
+      color: #666;
+      margin-bottom: 28px;
+    }
+    .pricing-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .pricing-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: #999;
+      line-height: 1.4;
+    }
+    .pricing-features .check { color: var(--accent); flex-shrink: 0; }
+    .pricing-features .cross { color: #ff6060; flex-shrink: 0; }
+    .btn-pricing {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 14px;
+      border-radius: 6px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-pricing.primary {
+      background: var(--accent);
+      color: #080808;
+    }
+    .btn-pricing.primary:hover { background: #7fffA0; }
+    .btn-pricing.outline {
+      background: transparent;
+      color: #888;
+      border: 1px solid #333;
+    }
+    .btn-pricing.outline:hover { border-color: #666; color: #ccc; }
+
+    /* ── FINAL CTA ────────────────────────────────────────────────────── */
+    #final-cta {
+      padding: 120px 0;
+      text-align: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(90,255,126,0.07) 0%, transparent 70%);
+      border-top: 1px solid var(--border);
+    }
+    .final-cta-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      color: #fff;
+      margin-bottom: 32px;
+      line-height: 1.05;
+    }
+    .founding-badge {
+      display: inline-block;
+      margin-top: 20px;
+      background: rgba(90,255,126,0.1);
+      border: 1px solid rgba(90,255,126,0.25);
+      border-radius: 100px;
+      padding: 8px 20px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    /* ── FOOTER ───────────────────────────────────────────────────────── */
+    #footer {
+      background: var(--surface-1);
+      border-top: 1px solid var(--border);
+      padding: 60px 0 40px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.06em;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    .footer-logo span { color: var(--accent); }
+    .footer-desc {
+      font-size: 0.88rem;
+      color: #666;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      max-width: 260px;
+    }
+    .shopify-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(150,191,64,0.1);
+      border: 1px solid rgba(150,191,64,0.25);
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #96bf40;
+      text-transform: uppercase;
+    }
+    .footer-col-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 18px;
+    }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a {
+      font-size: 0.88rem;
+      color: #666;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: #ccc; }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-copy {
+      font-size: 0.8rem;
+      color: #444;
+    }
+
+    /* ── RESPONSIVE ───────────────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      #navbar { padding: 16px 24px; }
+      .nav-links { gap: 24px; }
+      .pricing-grid { grid-template-columns: 1fr; border-radius: 12px; }
+      .pricing-col.featured { margin: 0; border-radius: 0; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .comp-grid { grid-template-columns: 1fr; }
+      .reviews-grid { grid-template-columns: 1fr; }
+      .vp-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+      #navbar { padding: 14px 20px; }
+      .pain-agitate { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SCROLL PROGRESS -->
+<div id="scroll-progress"></div>
+
+<!-- 1. TOP BANNER -->
+<div id="top-banner">
+  <span>🎉 Founding offer:</span> 30% off your first 3 builds&nbsp;&nbsp;·&nbsp;&nbsp;✓ Money-back guaranteed&nbsp;&nbsp;·&nbsp;&nbsp;<span>Limited spots available</span>
+</div>
+
+<!-- 2. NAVBAR -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">Shoponomy<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#reviews">Work</a></li>
+    <li><a href="#value-props">Team</a></li>
+    <li><a href="#comparison">Shoponomies</a></li>
+  </ul>
+  <a href="#final-cta" class="btn-nav">Check availability for your build</a>
+</nav>
+
+<!-- 3. HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-eyebrow reveal">AI-Native Shopify Agency</div>
+      <h1 class="hero-headline reveal reveal-delay-1">
+        Scale your Shopify Store to<br />
+        <em>7-Figures in 30 Days</em>—<br />
+        Without the £40k Agency Headache.
+      </h1>
+      <p class="hero-sub reveal reveal-delay-2">
+        Peace of mind with fixed pricing. We replace manual overhead with AI-first delivery—so you get better results, faster, for a fraction of the traditional cost.
+      </p>
+      <div class="hero-ctas reveal reveal-delay-3">
+        <a href="#final-cta" class="btn-primary">Check availability for your build</a>
+        <a href="#pricing" class="btn-secondary">See packages</a>
+      </div>
+      <p class="hero-badge reveal reveal-delay-3">
+        <span>✓</span> No hidden fees.<span>✓</span> Money-back guarantee.<span>✓</span> Fixed scope. Fixed price.
+      </p>
+      <div class="hero-social-proof reveal reveal-delay-4">
+        <div class="avatars">
+          <div class="avatar">SK</div>
+          <div class="avatar">JR</div>
+          <div class="avatar">ET</div>
+          <div class="avatar">ML</div>
+          <div class="avatar">PS</div>
+        </div>
+        <div class="social-proof-text">
+          <span class="stars">★★★★★</span>&nbsp;
+          <strong>Rated 5/5</strong> by 100+ Shopify founders
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. LOGOS TICKER -->
+<section id="logos">
+  <p class="ticker-label">Trusted by brands that run on Shopify</p>
+  <div style="overflow:hidden;">
+    <div class="ticker-track">
+      <div class="ticker-set">
+        <span class="ticker-item">Epic Games</span>
+        <span class="ticker-item">Ubisoft</span>
+        <span class="ticker-item">Shopify Plus</span>
+        <span class="ticker-item">Klaviyo</span>
+        <span class="ticker-item">Recharge</span>
+        <span class="ticker-item">Gorgias</span>
+      </div>
+      <div class="ticker-set">
+        <span class="ticker-item">Epic Games</span>
+        <span class="ticker-item">Ubisoft</span>
+        <span class="ticker-item">Shopify Plus</span>
+        <span class="ticker-item">Klaviyo</span>
+        <span class="ticker-item">Recharge</span>
+        <span class="ticker-item">Gorgias</span>
+      </div>
+      <div class="ticker-set">
+        <span class="ticker-item">Epic Games</span>
+        <span class="ticker-item">Ubisoft</span>
+        <span class="ticker-item">Shopify Plus</span>
+        <span class="ticker-item">Klaviyo</span>
+        <span class="ticker-item">Recharge</span>
+        <span class="ticker-item">Gorgias</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. STATS STRIP -->
+<section id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card reveal">
+        <div class="stat-number">200+</div>
+        <div class="stat-label">Shopify sites analysed</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-1">
+        <div class="stat-number">90%</div>
+        <div class="stat-label">Agencies still without AI</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-2">
+        <div class="stat-number">3×</div>
+        <div class="stat-label">More value vs traditional</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-3">
+        <div class="stat-number">100+</div>
+        <div class="stat-label">5-star reviews from founders</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. PAIN SECTION — PAS -->
+<section id="pain">
+  <div class="container">
+    <h2 class="pain-problem reveal">
+      Tired of agencies that overpromise, blow your budget, and deliver a generic template?
+    </h2>
+    <div class="pain-agitate reveal reveal-delay-1">
+      <div class="pain-agitate-title">⚠ The Hidden Agency Tax</div>
+      <p>The 60% of deliverables that don't actually drive sales—but you're still paying for. Bloated retainers, endless revision cycles, and a team you'll never meet again after launch. You're not buying results. You're buying busy-work.</p>
+    </div>
+    <p class="pain-solve reveal reveal-delay-2">→ There's a leaner, smarter alternative.</p>
+  </div>
+</section>
+
+<!-- 7. OLD WAY vs NEW WAY -->
+<section id="comparison">
+  <div class="container">
+    <span class="section-label">The real difference</span>
+    <h2 class="section-title">Old Way vs. New Way</h2>
+    <div class="comp-grid">
+      <div class="comp-card old reveal">
+        <div class="comp-heading">✕ The Old Way</div>
+        <ul class="comp-list">
+          <li><span class="comp-icon">✕</span> Agencies overpromise and underdeliver</li>
+          <li><span class="comp-icon">✕</span> Scope creep adds cost at every sprint</li>
+          <li><span class="comp-icon">✕</span> Inflated budgets with padded timelines</li>
+          <li><span class="comp-icon">✕</span> Support disappears after launch</li>
+          <li><span class="comp-icon">✕</span> Generic templates recycled for every client</li>
+          <li><span class="comp-icon">✕</span> Monthly retainers that never seem to end</li>
+          <li><span class="comp-icon">✕</span> AI bolted on as an afterthought</li>
+        </ul>
+      </div>
+      <div class="comp-card new reveal reveal-delay-1">
+        <div class="comp-heading">✓ The Shoponomy Way</div>
+        <ul class="comp-list">
+          <li><span class="comp-icon">✓</span> AI-native from day 1—not bolted on</li>
+          <li><span class="comp-icon">✓</span> Fixed scope. Fixed price. No surprises.</li>
+          <li><span class="comp-icon">✓</span> Transparent deliverables tied to revenue</li>
+          <li><span class="comp-icon">✓</span> AI Copilot supports your store 24/7</li>
+          <li><span class="comp-icon">✓</span> Custom builds backed by research</li>
+          <li><span class="comp-icon">✓</span> One-time fee, not endless retainers</li>
+          <li><span class="comp-icon">✓</span> Money-back guarantee—we stand behind results</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. WALL OF LOVE -->
+<section id="reviews">
+  <div class="container">
+    <span class="section-label">Wall of Love</span>
+    <h2 class="section-title">What founders are saying</h2>
+    <p class="section-sub">100+ five-star reviews from Shopify store owners who made the switch.</p>
+    <div class="reviews-grid">
+
+      <div class="review-card reveal">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Delivered in 3 weeks. Our conversion rate jumped 34% in the first month. I was skeptical about AI-native—now I won't work with anything else."</p>
+        <div class="review-author">
+          <div class="review-avatar">SK</div>
+          <div>
+            <div class="review-name">Sarah K.</div>
+            <div class="review-role">Founder @ LuxeHome</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card reveal reveal-delay-1">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Fixed price meant no surprises. The AI copilot alone was worth the investment—it handles our support queue before I even log in each morning."</p>
+        <div class="review-author">
+          <div class="review-avatar">JR</div>
+          <div>
+            <div class="review-name">James R.</div>
+            <div class="review-role">CEO @ PetElite</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card reveal reveal-delay-2">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Saved us £25k vs our last agency. Night and day difference. Same timeline, triple the output, and they actually understood our brand from day one."</p>
+        <div class="review-author">
+          <div class="review-avatar">ET</div>
+          <div>
+            <div class="review-name">Emma T.</div>
+            <div class="review-role">CMO @ Gallivant</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card reveal">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"The research-backed approach actually works. 28% AOV increase in 60 days. Not magic—just the right data feeding the right automations."</p>
+        <div class="review-author">
+          <div class="review-avatar">ML</div>
+          <div>
+            <div class="review-name">Marcus L.</div>
+            <div class="review-role">Founder @ UrbanGear</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card reveal reveal-delay-1">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Best Shopify investment we've made. Launched 40% faster than expected, and the site performed from day one—no post-launch firefighting."</p>
+        <div class="review-author">
+          <div class="review-avatar">PS</div>
+          <div>
+            <div class="review-name">Priya S.</div>
+            <div class="review-role">Head of Ecom @ NovaBrand</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card reveal reveal-delay-2">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"The AI copilot handles 60% of our support tickets automatically now. Our team can finally focus on growth instead of being buried in customer queries."</p>
+        <div class="review-author">
+          <div class="review-avatar">TW</div>
+          <div>
+            <div class="review-name">Tom W.</div>
+            <div class="review-role">COO @ SwiftSupply</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- 9. VALUE PROPS -->
+<section id="value-props">
+  <div class="container">
+    <span class="section-label">What you get</span>
+    <h2 class="section-title">Built to drive revenue.<br />Not just look good.</h2>
+    <div class="vp-grid">
+
+      <div class="vp-card reveal">
+        <span class="vp-icon">📈</span>
+        <div class="vp-title">Automate your Upsells and Boost Average Order Value by <em>25%</em></div>
+        <p class="vp-desc">AI-driven upsell flows triggered at the right moment in the buyer journey—without annoying pop-ups or lost context.</p>
+      </div>
+
+      <div class="vp-card reveal reveal-delay-1">
+        <span class="vp-icon">🤖</span>
+        <div class="vp-title">Never miss a sale with a <em>24/7 AI Sales Pro</em> that talks to your customers</div>
+        <p class="vp-desc">Your always-on sales agent handles objections, recommends products, and converts browsers while you sleep.</p>
+      </div>
+
+      <div class="vp-card reveal reveal-delay-2">
+        <span class="vp-icon">⚡</span>
+        <div class="vp-title">Help customers find what they want <em>3× faster</em>—and buy it</div>
+        <p class="vp-desc">Semantic search and AI-powered discovery that learns from your catalog and your customers' behaviour.</p>
+      </div>
+
+      <div class="vp-card reveal">
+        <span class="vp-icon">📊</span>
+        <div class="vp-title">Know exactly which page is costing you <em>£10k/month</em> in lost sales</div>
+        <p class="vp-desc">Revenue attribution at page level—so you fix what actually hurts, not what looks broken on first glance.</p>
+      </div>
+
+      <div class="vp-card reveal reveal-delay-1">
+        <span class="vp-icon">🚀</span>
+        <div class="vp-title">Load in under <em>2 seconds</em> or we fix it free—every second costs 7% in conversions</div>
+        <p class="vp-desc">Core Web Vitals-optimised delivery. We guarantee your store's performance or we come back and fix it at no charge.</p>
+      </div>
+
+      <div class="vp-card reveal reveal-delay-2">
+        <span class="vp-icon">💬</span>
+        <div class="vp-title">Cut support costs by <em>40%</em> with your always-on Shopify AI Copilot</div>
+        <p class="vp-desc">Trained on your products, policies, and FAQs. Deflects tickets, resolves issues, escalates only when needed.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- 10. VIDEO PLACEHOLDER -->
+<section id="video-section">
+  <div class="container">
+    <span class="section-label">See it in action</span>
+    <h2 class="section-title reveal">Watch the AI Copilot Work</h2>
+    <div class="video-wrapper reveal reveal-delay-1">
+      <div class="video-grid-lines"></div>
+      <div class="video-overlay">
+        <div class="play-btn">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </div>
+        <div class="video-caption">60-second walkthrough — Watch the AI Copilot in action</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. SALES LETTER INTRO -->
+<section id="sales-intro">
+  <div class="container">
+    <div class="sales-letter reveal">
+      <p>In 2026, most Shopify agencies are still operating with a <strong>2015 playbook</strong>. They hire big teams, pad timelines, and charge for deliverables that don't move the needle. Meanwhile, the gap between AI-native and traditional agencies keeps growing.</p>
+      <br />
+      <p>Here's what that means for you: you can now get <strong>better results, faster, for a fraction of the cost</strong>. The question isn't whether AI changes the game—it already has. The question is whether your next build benefits from that shift, or pays the price of ignoring it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 12. COMPARISON TABLE -->
+<section id="pricing">
+  <div class="container">
+    <span class="section-label">Investment</span>
+    <h2 class="section-title reveal">Choose your path to scale</h2>
+    <p class="section-sub reveal reveal-delay-1">Transparent pricing. No hidden fees. No scope creep.</p>
+    <div class="pricing-grid reveal reveal-delay-2">
+
+      <!-- Traditional -->
+      <div class="pricing-col">
+        <div class="pricing-type">Traditional Agency</div>
+        <div class="pricing-price">£40k–80k</div>
+        <div class="pricing-range">Avg. project cost</div>
+        <ul class="pricing-features">
+          <li><span class="cross">✕</span> Large teams, padded timelines</li>
+          <li><span class="cross">✕</span> Scope creep billed by the hour</li>
+          <li><span class="cross">✕</span> AI added as an afterthought</li>
+          <li><span class="cross">✕</span> Monthly retainers post-launch</li>
+          <li><span class="cross">✕</span> Generic templates repackaged</li>
+          <li><span class="cross">✕</span> No performance guarantee</li>
+          <li><span class="cross">✕</span> Support disappears after handover</li>
+        </ul>
+        <a href="#final-cta" class="btn-pricing outline">Learn more</a>
+      </div>
+
+      <!-- AI-Native FEATURED -->
+      <div class="pricing-col featured">
+        <div class="pricing-badge">★ Recommended</div>
+        <div class="pricing-type">AI-Native — Shoponomy</div>
+        <div class="pricing-price">£9k–17k</div>
+        <div class="pricing-range">Fixed project price · No retainer</div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> AI-native from day 1</li>
+          <li><span class="check">✓</span> Fixed scope & fixed price</li>
+          <li><span class="check">✓</span> Revenue-focused deliverables</li>
+          <li><span class="check">✓</span> AI Copilot included</li>
+          <li><span class="check">✓</span> Custom-built, not templated</li>
+          <li><span class="check">✓</span> Money-back guarantee</li>
+          <li><span class="check">✓</span> 24/7 AI support post-launch</li>
+        </ul>
+        <a href="#final-cta" class="btn-pricing primary">Check availability →</a>
+      </div>
+
+      <!-- DIY -->
+      <div class="pricing-col">
+        <div class="pricing-type">DIY / Freelancer</div>
+        <div class="pricing-price">£2k–8k</div>
+        <div class="pricing-range">Avg. project cost</div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Lowest upfront cost</li>
+          <li><span class="cross">✕</span> Your time is the hidden cost</li>
+          <li><span class="cross">✕</span> No AI integration</li>
+          <li><span class="cross">✕</span> No strategic guidance</li>
+          <li><span class="cross">✕</span> High technical risk</li>
+          <li><span class="cross">✕</span> No performance guarantee</li>
+          <li><span class="cross">✕</span> Solo on every problem</li>
+        </ul>
+        <a href="#final-cta" class="btn-pricing outline">Explore options</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- 13. FINAL CTA -->
+<section id="final-cta">
+  <div class="container">
+    <div class="reveal">
+      <h2 class="final-cta-title">Ready to scale<br />without the agency headache?</h2>
+      <a href="#" class="btn-primary" style="font-size:1.1rem; padding:18px 40px;">Check availability for your build</a>
+      <br />
+      <div class="founding-badge">🎉 30% founding offer · Limited spots remaining</div>
+    </div>
+  </div>
+</section>
+
+<!-- 14. FOOTER -->
+<footer id="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">Shoponomy<span>.</span></div>
+        <p class="footer-desc">The AI-native Shopify agency built for founders who want results—not retainers. Fixed price. Fixed scope. Guaranteed.</p>
+        <div class="shopify-badge">
+          <svg width="14" height="16" viewBox="0 0 14 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M11.97 3.1a.16.16 0 00-.15-.13c-.06 0-1.3-.02-1.3-.02s-1.03-.99-1.13-1.09a.42.42 0 00-.3-.08l-.45.09C8.3 1.27 7.87.5 6.91.5a.83.83 0 00-.16.01C6.56.18 6.22 0 5.88 0 3.64 0 2.57 2.7 2.25 4.07l-1.8.56c-.55.17-.57.19-.64.7L-.01 14 9.5 16l5.02-1.09L11.97 3.1zM8.8 1.96l-.7.22V1.92c0-.45-.06-.82-.17-1.1.42.05.71.53.87 1.14zm-1.72-.96c.11.27.19.67.19 1.2v.08l-1.4.44C6.18 1.7 6.77.57 7.08 1zm-.94-.1c-.19 0-.38.07-.55.21.37-.1.87-.07 1.3.1C6.7.69 6.4.5 6.14.5z"/></svg>
+          Shopify Expert
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Product</div>
+        <ul class="footer-links">
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Case Studies</a></li>
+          <li><a href="#">AI Copilot</a></li>
+          <li><a href="#">Shoponomies</a></li>
+          <li><a href="#">Integrations</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="#">About</a></li>
+          <li><a href="#">Team</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Legal</div>
+        <ul class="footer-links">
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+          <li><a href="#">Refund Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 Shoponomy Ltd. All rights reserved. Registered in England & Wales.</div>
+      <div class="footer-copy">Made with AI · Built for founders 🤖</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── SCROLL PROGRESS ─────────────────────────────────────────────────────
+  const progressBar = document.getElementById('scroll-progress');
+  function updateProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+
+  // ── NAVBAR BLUR ON SCROLL ────────────────────────────────────────────────
+  const navbar = document.getElementById('navbar');
+  function updateNavbar() {
+    if (window.scrollY > 40) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  }
+
+  // ── REVEAL ON SCROLL ─────────────────────────────────────────────────────
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  revealEls.forEach(el => revealObserver.observe(el));
+
+  // ── SCROLL EVENT ─────────────────────────────────────────────────────────
+  window.addEventListener('scroll', () => {
+    updateProgress();
+    updateNavbar();
+  }, { passive: true });
+
+  // Initial trigger
+  updateProgress();
+  updateNavbar();
+
+  // ── VIDEO PLACEHOLDER CLICK ──────────────────────────────────────────────
+  const videoWrapper = document.querySelector('.video-wrapper');
+  if (videoWrapper) {
+    videoWrapper.addEventListener('click', () => {
+      // In production, swap for actual video embed
+      alert('Video coming soon! The AI Copilot walkthrough will be available here.');
+    });
+  }
+
+  // ── SMOOTH ANCHOR SCROLL ─────────────────────────────────────────────────
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
